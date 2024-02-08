@@ -1,0 +1,220 @@
+const fs = require('fs');
+const express = require ('express');
+
+const app = express();
+const jsonData = require(`${__dirname}/data/hotels.json`)
+app.use(express.json()) // prisidedam ir matom body kuri issiuncia
+
+const router = express.Router();
+// server
+
+const port = "8889";
+
+// middlewares
+
+app.use((req, res, next)=>{
+    console.log('veikia')
+    next();
+})
+
+
+const checkHotel = (req, res, next) => {
+    const hotel = hotels.find((hotel) => hotel.id == req.params.id);
+    if (!hotel)
+    {
+        res.status(404).json({
+            status: 'failure',
+            message: 'invalid ID',
+        })
+        return
+    }
+    req.hotel = hotel
+    next()
+}
+
+hotelsRouter.param('id', checkHotel)
+
+
+
+
+// calbacks
+/*
+getAllHotels = (req, res)=>{
+    res
+    .status(200)
+    .json({
+        status: 'success',
+        results: hotelsData.length,
+        data: {
+            hotelsData
+        }
+    })
+}
+*/
+
+/*
+createHotel = (req, res)=>{
+    const newId = hotels[hotels.length-1].id+1;
+    const hotelData = Object.assign({id:newId}, req.body)
+    hotels.push(hotelData)
+    fs.writeFileSync(`${__dirname/data/hotels.json}`, JSON.stringify(hotels))
+    console.log(hotels)
+    res
+    .status(201)
+    .json({
+        status: 'success',
+        message: 'new hotel created',
+        data : hotelData
+    })
+}
+*/
+/*
+getHotel = (req, res)=>{
+    const newId = hotels[hotels.length-1].id+1;
+    const hotelData = Object.assign({id:newId}, req.body)
+    hotels.push(hotelData)
+    fs.writeFileSync(`${__dirname/data/hotels.json}`, JSON.stringify(hotels))
+    console.log(hotels)
+    res
+    .status(201)
+    .json({
+        status: 'success',
+        message: 'new hotel created',
+        data : hotelData
+    })
+}
+*/
+
+updateHotel = (req, res)=>{
+    res
+    .status(200)
+    .json({
+        status: "success",
+        message: "hotel updated",
+        data: "<updated>"
+    })
+}
+
+deleteHotel = (req, res) => {
+    res
+    .status(200)
+    .json({
+        status: "success",
+        message: "hotel deleted",
+        data: null
+    })
+}
+
+// routes 
+const hotelsRouter = express.Router();
+
+app.use('/api/v1/hotels', hotelsRouter);
+
+hotelsRouter
+.route('/')
+.get(getAllHotels)
+.post(createhotel)
+hotelsRouter
+.route('/:id')
+.get(getHotel)
+.patch(updateHotel)
+.delete(deleteHotel)
+
+/*
+app.get('/', (req, res)=>{
+    res
+    .status(200)
+    .send('labas')
+});
+*/
+/*
+app.get('/about-project', (req, res)=>{
+    res
+    .status(200)
+    .json({
+        status: 'sucess',
+        data: {
+            project: "hotel catalog",
+            version: 0.1
+        }
+    })
+});
+*/
+
+const hotels = fs.readFileSync('./data/hotels.json',{encoding: 'utf8'})
+hotelsData = JSON.parse(hotels)
+
+
+app.get('/api/v1/hotels', (req, res)=>{
+    res
+    .status(200)
+    .json({
+        status: 'success',
+        results: hotelsData.length,
+        data: {
+            hotelsData
+        }
+    })
+});
+
+// pasitikrint
+/*
+app.get('/api/v1/hotels/:id', (req, res)=>{
+    const hotel = hotels.find(el=>el.id === Number(req.params.id))
+    if(!hotel){
+        return res.status(404).json({
+            status : 'failed',
+            message: 'ivalid data'
+        })
+    }
+    res
+    .status(200)
+    .json({
+        status: 'success',
+        data: {
+            hotel
+        }
+    })
+})
+*/
+
+//pasitikrint
+/*
+app.post('/api/v1/hotels', (req, res)=>{
+    const newId = hotels[hotels.length-1].id+1;
+    const hotelData = Object.assign({id:newId}, req.body)
+    hotels.push(hotelData)
+    fs.writeFileSync(`${__dirname/data/hotels.json}`, JSON.stringify(hotels))
+    console.log(hotels)
+    res
+    .status(201)
+    .json({
+        status: 'success',
+        message: 'new hotel created',
+        data : hotelData
+    })
+})
+*/
+// patch updaitina
+app.patch('/api/v1/hotels/:id', (req, res)=>{
+    res
+    .status(200)
+    .json({
+        status: "success",
+        message: "hotel updated",
+        data: "<updated>"
+    })
+})
+
+app.delete('/api/v1/hotels/:id', (req, res) => {
+    res
+    .status(200)
+    .json({
+        status: "success",
+        message: "hotel deleted",
+        data: null
+    })
+})
+
+
+app.listen(port, ()=>{console.log('server runing on port', port)})
