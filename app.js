@@ -5,7 +5,7 @@ app.use(express.json())
 const hotelsRouter = express.Router();
 const morgan = require('morgan')
  
-hotelsRouter.param('id', checkHotel)
+//hotelsRouter.param('id', checkHotel)
  
 app.use(morgan('dev'))
 app.use('/api/v1/hotels',hotelsRouter);
